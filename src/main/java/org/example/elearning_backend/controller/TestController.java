@@ -20,4 +20,9 @@ public class TestController {
     public String health() {
         return "Server is running! Time: " + java.time.LocalDateTime.now();
     }
+
+    @GetMapping("/api/protected/test")
+    public String protectedTest() {
+        return "🔐 This is a protected endpoint - you have a valid JWT token!";
+    }
 }
