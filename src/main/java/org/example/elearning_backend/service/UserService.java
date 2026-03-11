@@ -71,4 +71,10 @@ public class UserService {
     public List<User> getUsersByStatus(UserStatus status) {
         return userRepository.findByStatus(status);
     }
+
+    // Add this method to UserService.java
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
 }
