@@ -24,4 +24,7 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     // Count how many students are enrolled in a course
     Long countByCourse(Course course);
+
+    // Add this method to check if a student is enrolled in a course
+    boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
 }
