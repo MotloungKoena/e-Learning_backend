@@ -17,4 +17,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
 
     // Find materials by course ID
     List<Material> findByCourseId(Long courseId);
+
+    // Add this method to order materials
+    List<Material> findByCourseOrderByOrderIndexAsc(Course course);
 }
