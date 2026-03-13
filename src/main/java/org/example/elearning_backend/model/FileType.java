@@ -1,5 +1,16 @@
 package org.example.elearning_backend.model;
 
 public enum FileType {
-    VIDEO, PDF, DOCUMENT
+    VIDEO,
+    PDF,
+    DOCUMENT,
+    PRESENTATION,
+    AUDIO,
+    OTHER
 }
+
+/*package org.example.elearning_backend.model;
+
+public enum FileType {
+    VIDEO, PDF, DOCUMENT
+}*/
