@@ -18,9 +18,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
+// Add these imports
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -84,7 +87,7 @@ public class AuthController {
     /**
      * Register endpoint - Creates a new user account
      */
-    @PostMapping("/register")
+    /*@PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
             // Check if email already exists
@@ -123,7 +126,7 @@ public class AuthController {
                     .badRequest()
                     .body("Error: " + e.getMessage());
         }
-    }
+    }*/
 
     /**
      * Test endpoint - Check if authentication is working
@@ -131,5 +134,107 @@ public class AuthController {
     @GetMapping("/test")
     public String test() {
         return "Auth endpoint is working!";
+    }
+
+    /**
+     * Register endpoint with email verification
+     */
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            // Check if email already exists
+            if (userRepository.existsByEmail(registerRequest.getEmail())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("Error: Email is already in use!");
+            }
+
+            // Create new user
+            User user = new User();
+            user.setEmail(registerRequest.getEmail());
+            user.setPassword(registerRequest.getPassword()); // Will be encoded in service
+            user.setFirstName(registerRequest.getFirstName());
+            user.setLastName(registerRequest.getLastName());
+
+            // Set role
+            String roleStr = registerRequest.getRole();
+            if (roleStr != null && roleStr.equalsIgnoreCase("INSTRUCTOR")) {
+                user.setRole(Role.INSTRUCTOR);
+            } else {
+                user.setRole(Role.STUDENT);
+            }
+
+            // Register with verification
+            userService.registerUserWithVerification(user);
+
+            return ResponseEntity.ok("User registered successfully! Please check your email to verify your account.");
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Verify email endpoint
+     */
+    @GetMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestParam String token) {
+        try {
+            User user = userService.verifyEmail(token);
+            return ResponseEntity.ok("Email verified successfully! You can now log in.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error verifying email: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Request password reset
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        try {
+            userService.createPasswordResetToken(email);
+            return ResponseEntity.ok("Password reset email sent. Please check your inbox.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Reset password
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestParam String token,
+            @RequestParam String newPassword) {
+        try {
+            User user = userService.resetPassword(token, newPassword);
+            return ResponseEntity.ok("Password reset successfully! You can now log in with your new password.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error resetting password: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Resend verification email
+     */
+    @PostMapping("/resend-verification")
+    public ResponseEntity<?> resendVerification(@RequestParam String email) {
+        try {
+            userService.resendVerificationEmail(email);
+            return ResponseEntity.ok("Verification email resent. Please check your inbox.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: " + e.getMessage());
+        }
     }
 }
