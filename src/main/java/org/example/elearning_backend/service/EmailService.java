@@ -23,7 +23,7 @@ public class EmailService {
     private String baseUrl;
 
     /**
-     * Send verification email to new user
+     * Send verification email to the new user that has been registered
      */
     public void sendVerificationEmail(String toEmail, String token) {
         String subject = "Verify Your Email - E-Learning Platform";
