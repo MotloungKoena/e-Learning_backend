@@ -45,10 +45,8 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    /**
-     * Login endpoint - Authenticates user and returns JWT token
-     */
-    @PostMapping("/login")
+
+    /*@PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             // Create authentication token with email and password
@@ -82,11 +80,8 @@ public class AuthController {
                     .badRequest()
                     .body("Error: Invalid email or password");
         }
-    }
+    }*/
 
-    /**
-     * Register endpoint - Creates a new user account
-     */
     /*@PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
@@ -136,9 +131,64 @@ public class AuthController {
         return "Auth endpoint is working!";
     }
 
-    /**
-     * Register endpoint with email verification
-     */
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            // First, check if user exists and is verified
+            User user = userRepository.findByEmail(loginRequest.getEmail())
+                    .orElse(null);
+
+            if (user == null) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("Error: User not found");
+            }
+
+            // Check if email is verified
+            if (user.getStatus() == UserStatus.PENDING) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("Error: Please verify your email before logging in. Check your inbox for the verification link.");
+            }
+
+            // Check if user is blocked
+            if (user.getStatus() == UserStatus.BLOCKED) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("Error: Your account has been blocked. Please contact administrator.");
+            }
+
+            // Create authentication token with email and password
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+            );
+
+            // Set authentication in security context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Generate JWT token
+            String jwt = jwtUtils.generateJwtToken(authentication);
+
+            // Get user details
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+            // Return response with token and user info
+            return ResponseEntity.ok(new JwtResponse(
+                    jwt,
+                    userDetails.getId(),
+                    userDetails.getEmail(),
+                    user.getRole().name(),
+                    user.getFirstName()
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: Invalid email or password");
+        }
+    }
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
@@ -179,7 +229,7 @@ public class AuthController {
     /**
      * Verify email endpoint
      */
-    @GetMapping("/verify-email")
+    /*@GetMapping("/verify-email")
     public ResponseEntity<?> verifyEmail(@RequestParam String token) {
         try {
             User user = userService.verifyEmail(token);
@@ -188,6 +238,59 @@ public class AuthController {
             return ResponseEntity
                     .badRequest()
                     .body("Error verifying email: " + e.getMessage());
+        }
+    }*/
+    /**
+     * Verify email endpoint - This is what the link in the email points to
+     */
+    @GetMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestParam String token) {
+        try {
+            User user = userService.verifyEmail(token);
+
+            // You can return HTML or JSON - for now, let's return a simple success message
+            String successMessage = "<!DOCTYPE html>\n" +
+                    "<html>\n" +
+                    "<head>\n" +
+                    "    <title>Email Verified</title>\n" +
+                    "    <style>\n" +
+                    "        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }\n" +
+                    "        .success { color: green; font-size: 24px; margin: 20px; }\n" +
+                    "        .message { color: #333; font-size: 18px; margin: 20px; }\n" +
+                    "        .login-link { display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <div class='success'>✅ Email Verified Successfully!</div>\n" +
+                    "    <div class='message'>Your email has been verified. You can now log in to your account.</div>\n" +
+                    "    <a href='http://localhost:3000/login' class='login-link'>Go to Login</a>\n" +
+                    "</body>\n" +
+                    "</html>";
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", "text/html")
+                    .body(successMessage);
+
+        } catch (Exception e) {
+            String errorMessage = "<!DOCTYPE html>\n" +
+                    "<html>\n" +
+                    "<head>\n" +
+                    "    <title>Verification Failed</title>\n" +
+                    "    <style>\n" +
+                    "        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }\n" +
+                    "        .error { color: red; font-size: 24px; margin: 20px; }\n" +
+                    "        .message { color: #333; font-size: 18px; margin: 20px; }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <div class='error'>❌ Verification Failed</div>\n" +
+                    "    <div class='message'>" + e.getMessage() + "</div>\n" +
+                    "</body>\n" +
+                    "</html>";
+
+            return ResponseEntity.badRequest()
+                    .header("Content-Type", "text/html")
+                    .body(errorMessage);
         }
     }
 
