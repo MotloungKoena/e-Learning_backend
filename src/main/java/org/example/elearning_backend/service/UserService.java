@@ -25,14 +25,14 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     // Register a new user
-    public User registerUser(User user) {
+    /*public User registerUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already in use!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         return userRepository.save(user);
-    }
+    }*/
 
     // Find user by email
     public Optional<User> findByEmail(String email) {
