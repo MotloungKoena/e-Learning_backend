@@ -96,6 +96,18 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Email sending -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- For generating random tokens -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
