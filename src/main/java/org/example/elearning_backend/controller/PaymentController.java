@@ -50,7 +50,7 @@ public class PaymentController {
     }
 
     /**
-     * Get publishable key for frontend
+     * Get publishable key for frontend use
      */
     @GetMapping("/config")
     public ResponseEntity<?> getConfig() {
