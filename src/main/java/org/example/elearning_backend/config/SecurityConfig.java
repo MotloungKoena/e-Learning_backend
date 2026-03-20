@@ -40,6 +40,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -47,6 +48,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/courses/published").permitAll()  // ADD THIS LINE
+                        .requestMatchers("/api/courses/search").permitAll()     // ADD THIS
+                        .requestMatchers("/api/courses/category/**").permitAll() // ADD THIS
 
                         // Role-based endpoints - will be handled by @PreAuthorize annotations
                         .anyRequest().authenticated()

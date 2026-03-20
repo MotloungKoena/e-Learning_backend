@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  // FIXED
 public class CourseController {
 
     @Autowired
@@ -50,9 +50,16 @@ public class CourseController {
     /**
      * Get all published courses (anyone can view)
      */
-    @GetMapping("/published")
+    /*@GetMapping("/published")
     public ResponseEntity<List<Course>> getPublishedCourses() {
         return ResponseEntity.ok(courseService.getAllPublishedCourses());
+    }*/
+    @GetMapping("/published")
+    public ResponseEntity<List<Course>> getPublishedCourses() {
+        System.out.println("=== GET /api/courses/published called ===");
+        List<Course> courses = courseService.getAllPublishedCourses();
+        System.out.println("Found " + courses.size() + " courses");
+        return ResponseEntity.ok(courses);
     }
 
     /**

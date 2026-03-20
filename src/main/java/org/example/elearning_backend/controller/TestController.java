@@ -8,7 +8,7 @@ public class TestController {
 
     @GetMapping("/api/test")
     public String testEndpoint() {
-        return "🎉 Backend is working! You can now build your API!";
+        return "yay Backend is working! You can now build your API!";
     }
 
     @GetMapping("/api/hello")
@@ -23,6 +23,6 @@ public class TestController {
 
     @GetMapping("/api/protected/test")
     public String protectedTest() {
-        return "🔐 This is a protected endpoint - you have a valid JWT token!";
+        return " This is a protected endpoint - you have a valid JWT token!";
     }
 }
