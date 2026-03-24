@@ -23,9 +23,6 @@ public class EnrollmentService {
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Enroll a student in a course
-     */
     public Enrollment enrollStudent(Long studentId, Long courseId) {
         // Check if already enrolled
         if (enrollmentRepository.existsByStudentIdAndCourseId(studentId, courseId)) {
@@ -55,18 +52,12 @@ public class EnrollmentService {
         return enrollmentRepository.save(enrollment);
     }
 
-    /**
-     * Get all enrollments for a student
-     */
     public List<Enrollment> getStudentEnrollments(Long studentId) {
         User student = userRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
         return enrollmentRepository.findByStudent(student);
     }
 
-    /**
-     * Get all students enrolled in a course (for instructors)
-     */
     public List<Enrollment> getCourseEnrollments(Long courseId, Long instructorId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
@@ -79,9 +70,6 @@ public class EnrollmentService {
         return enrollmentRepository.findByCourse(course);
     }
 
-    /**
-     * Update student's progress in a course
-     */
     public Enrollment updateProgress(Long enrollmentId, Integer progress, Long studentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
@@ -106,25 +94,16 @@ public class EnrollmentService {
         return enrollmentRepository.save(enrollment);
     }
 
-    /**
-     * Check if a student is enrolled in a course
-     */
     public boolean isEnrolled(Long studentId, Long courseId) {
         return enrollmentRepository.existsByStudentIdAndCourseId(studentId, courseId);
     }
 
-    /**
-     * Get enrollment count for a course
-     */
     public Long getEnrollmentCount(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         return enrollmentRepository.countByCourse(course);
     }
 
-    /**
-     * Unenroll from a course (students can drop courses)
-     */
     public void unenroll(Long enrollmentId, Long studentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
@@ -136,6 +115,4 @@ public class EnrollmentService {
 
         enrollmentRepository.delete(enrollment);
     }
-
-
 }
