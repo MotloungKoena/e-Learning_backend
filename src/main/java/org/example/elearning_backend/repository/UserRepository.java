@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Check if email exists
     Boolean existsByEmail(String email);
 
-    // Find users by role - THIS IS THE CORRECT METHOD NAME
+    // Find users by role
     List<User> findByRole(Role role);
 
     // Find users by status
