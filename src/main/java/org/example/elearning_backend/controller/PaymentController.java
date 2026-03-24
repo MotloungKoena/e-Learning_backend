@@ -14,16 +14,12 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/payments")
-//@CrossOrigin(origins = "*")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  // FIXED
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
 
-    /**
-     * Create a payment intent for course purchase
-     */
     @PostMapping("/create-payment-intent")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> createPaymentIntent(
@@ -50,9 +46,6 @@ public class PaymentController {
         }
     }
 
-    /**
-     * Get publishable key for frontend use
-     */
     @GetMapping("/config")
     public ResponseEntity<?> getConfig() {
         return ResponseEntity.ok()

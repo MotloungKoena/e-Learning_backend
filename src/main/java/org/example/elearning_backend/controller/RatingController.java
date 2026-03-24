@@ -15,16 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-//@CrossOrigin(origins = "*")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  // FIXED
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class RatingController {
 
     @Autowired
     private RatingService ratingService;
 
-    /**
-     * Rate a course (STUDENT only - must be enrolled)
-     */
     @PostMapping("/courses/{courseId}/ratings")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> rateCourse(
@@ -41,9 +37,6 @@ public class RatingController {
         }
     }
 
-    /**
-     * Update an existing rating (STUDENT only)
-     */
     @PutMapping("/ratings/{ratingId}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> updateRating(
@@ -52,16 +45,12 @@ public class RatingController {
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
 
         try {
-            // Note: We're reusing the rateCourse method since it handles both create and update
-            // But we need the courseId - we could add a separate update method if needed
             RatingResponse response = ratingService.getRating(ratingId);
             if (!response.getStudentId().equals(currentUser.getId())) {
                 return ResponseEntity.badRequest()
                         .body("You can only update your own ratings");
             }
 
-            // Extract courseId from the rating and call rateCourse again
-            // For simplicity, we'll just return a message to use POST with same course
             return ResponseEntity.badRequest()
                     .body("To update, please POST to /courses/{courseId}/ratings with the same course ID");
 
@@ -71,9 +60,6 @@ public class RatingController {
         }
     }
 
-    /**
-     * Get all ratings for a course (PUBLIC)
-     */
     @GetMapping("/courses/{courseId}/ratings")
     public ResponseEntity<?> getCourseRatings(@PathVariable Long courseId) {
         try {
@@ -85,9 +71,6 @@ public class RatingController {
         }
     }
 
-    /**
-     * Get rating summary for a course (PUBLIC)
-     */
     @GetMapping("/courses/{courseId}/ratings/summary")
     public ResponseEntity<?> getCourseRatingSummary(@PathVariable Long courseId) {
         try {
@@ -99,9 +82,6 @@ public class RatingController {
         }
     }
 
-    /**
-     * Get a specific rating by ID (PUBLIC)
-     */
     @GetMapping("/ratings/{ratingId}")
     public ResponseEntity<?> getRating(@PathVariable Long ratingId) {
         try {
@@ -113,9 +93,6 @@ public class RatingController {
         }
     }
 
-    /**
-     * Check if current student has rated a course
-     */
     @GetMapping("/courses/{courseId}/ratings/my-rating")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> hasRated(
@@ -131,9 +108,6 @@ public class RatingController {
         }
     }
 
-    /**
-     * Delete a rating (STUDENT - own ratings, ADMIN - any)
-     */
     @DeleteMapping("/ratings/{ratingId}")
     @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteRating(
