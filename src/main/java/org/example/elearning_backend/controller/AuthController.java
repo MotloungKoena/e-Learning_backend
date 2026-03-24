@@ -20,14 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
-// Add these imports
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @RestController
 @RequestMapping("/api/auth")
-//@CrossOrigin(origins = "*") // Allow requests from React frontend
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
 
@@ -46,93 +43,10 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-
-    /*@PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            // Create authentication token with email and password
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-            );
-
-            // Set authentication in security context
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            // Generate JWT token
-            String jwt = jwtUtils.generateJwtToken(authentication);
-
-            // Get user details
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-            // Get the full user from database to get name
-            User user = userRepository.findByEmail(userDetails.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            // Return response with token and user info
-            return ResponseEntity.ok(new JwtResponse(
-                    jwt,
-                    userDetails.getId(),
-                    userDetails.getEmail(),
-                    user.getRole().name(),
-                    user.getFirstName()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: Invalid email or password");
-        }
-    }*/
-
-    /*@PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        try {
-            // Check if email already exists
-            if (userRepository.existsByEmail(registerRequest.getEmail())) {
-                return ResponseEntity
-                        .badRequest()
-                        .body("Error: Email is already in use!");
-            }
-
-            // Create new user
-            User user = new User();
-            user.setEmail(registerRequest.getEmail());
-            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            user.setFirstName(registerRequest.getFirstName());
-            user.setLastName(registerRequest.getLastName());
-            user.setCreatedAt(LocalDateTime.now());
-
-            // Set role (default to STUDENT if not specified)
-            String roleStr = registerRequest.getRole();
-            if (roleStr != null && roleStr.equalsIgnoreCase("INSTRUCTOR")) {
-                user.setRole(Role.INSTRUCTOR);
-                // Instructors need admin approval
-                user.setStatus(UserStatus.PENDING);
-            } else {
-                user.setRole(Role.STUDENT);
-                user.setStatus(UserStatus.ACTIVE);
-            }
-
-            // Save user to database
-            userRepository.save(user);
-
-            return ResponseEntity.ok("User registered successfully!");
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: " + e.getMessage());
-        }
-    }*/
-
-    /**
-     * Test endpoint - Check if authentication is working
-     */
     @GetMapping("/test")
     public String test() {
         return "Auth endpoint is working!";
     }
-
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -190,6 +104,8 @@ public class AuthController {
                     .body("Error: Invalid email or password hey");
         }
     }
+
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
@@ -227,29 +143,10 @@ public class AuthController {
         }
     }
 
-    /**
-     * Verify email endpoint
-     */
-    /*@GetMapping("/verify-email")
-    public ResponseEntity<?> verifyEmail(@RequestParam String token) {
-        try {
-            User user = userService.verifyEmail(token);
-            return ResponseEntity.ok("Email verified successfully! You can now log in.");
-        } catch (Exception e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error verifying email: " + e.getMessage());
-        }
-    }*/
-    /**
-     * Verify email endpoint - This is what the link in the email points to
-     */
     @GetMapping("/verify-email")
     public ResponseEntity<?> verifyEmail(@RequestParam String token) {
         try {
             User user = userService.verifyEmail(token);
-
-            // You can return HTML or JSON - for now, let's return a simple success message
             String successMessage = "<!DOCTYPE html>\n" +
                     "<html>\n" +
                     "<head>\n" +
@@ -295,9 +192,6 @@ public class AuthController {
         }
     }
 
-    /**
-     * Request password reset
-     */
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         try {
@@ -310,9 +204,7 @@ public class AuthController {
         }
     }
 
-    /**
-     * Reset password
-     */
+
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(
             @RequestParam String token,
@@ -327,9 +219,6 @@ public class AuthController {
         }
     }
 
-    /**
-     * Resend verification email
-     */
     @PostMapping("/resend-verification")
     public ResponseEntity<?> resendVerification(@RequestParam String email) {
         try {
