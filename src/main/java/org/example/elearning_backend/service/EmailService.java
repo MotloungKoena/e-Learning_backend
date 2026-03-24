@@ -22,9 +22,6 @@ public class EmailService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    /**
-     * Send verification email to the new user that has been registered
-     */
     public void sendVerificationEmail(String toEmail, String token) {
         String subject = "Verify Your Email - E-Learning Platform";
         String verificationLink = baseUrl + "/api/auth/verify-email?token=" + token;
@@ -44,9 +41,6 @@ public class EmailService {
         sendEmail(toEmail, subject, message);
     }
 
-    /**
-     * Send password reset email
-     */
     public void sendPasswordResetEmail(String toEmail, String token) {
         String subject = "Password Reset Request - E-Learning Platform";
         String resetLink = baseUrl + "/api/auth/reset-password?token=" + token;
@@ -67,9 +61,6 @@ public class EmailService {
         sendEmail(toEmail, subject, message);
     }
 
-    /**
-     * Generic email sender
-     */
     private void sendEmail(String to, String subject, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
