@@ -48,11 +48,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/courses/published").permitAll()  // ADD THIS LINE
-                        .requestMatchers("/api/courses/search").permitAll()     // ADD THIS
-                        .requestMatchers("/api/courses/category/**").permitAll() // ADD THIS
+                        .requestMatchers("/api/courses/published").permitAll()
+                        .requestMatchers("/api/courses/search").permitAll()
+                        .requestMatchers("/api/courses/category/**").permitAll()
                         //.requestMatchers("/api/courses/{courseId}").permitAll()
-                        .requestMatchers("/api/courses/*").permitAll()  // This matches /api/courses/1, /api/courses/2, etc.
+                        .requestMatchers("/api/courses/*").permitAll()
                         // Role-based endpoints - will be handled by @PreAuthorize annotations
                         .anyRequest().authenticated()
                 )
