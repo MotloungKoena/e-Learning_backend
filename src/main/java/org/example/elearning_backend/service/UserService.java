@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-// Add these imports at the top
 import org.example.elearning_backend.model.TokenType;
 import org.example.elearning_backend.model.VerificationToken;
 import org.example.elearning_backend.repository.VerificationTokenRepository;
@@ -24,15 +23,11 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Register a new user
-    /*public User registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already in use!");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setStatus(UserStatus.ACTIVE);
-        return userRepository.save(user);
-    }*/
+    @Autowired
+    private VerificationTokenRepository tokenRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     // Find user by email
     public Optional<User> findByEmail(String email) {
@@ -83,18 +78,6 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
-
-
-    // Add these autowired dependencies
-    @Autowired
-    private VerificationTokenRepository tokenRepository;
-
-    @Autowired
-    private EmailService emailService;
-
-    /**
-     * Register a new user with email verification
-     */
     @Transactional
     public User registerUserWithVerification(User user) {
         // Check if email already exists
@@ -121,9 +104,6 @@ public class UserService {
         return savedUser;
     }
 
-    /**
-     * Verify email with token
-     */
     @Transactional
     public User verifyEmail(String token) {
         VerificationToken verificationToken = tokenRepository.findByToken(token)
@@ -155,9 +135,6 @@ public class UserService {
         return user;
     }
 
-    /**
-     * Create password reset token
-     */
     @Transactional
     public void createPasswordResetToken(String email) {
         User user = userRepository.findByEmail(email)
@@ -175,9 +152,6 @@ public class UserService {
         emailService.sendPasswordResetEmail(user.getEmail(), resetToken.getToken());
     }
 
-    /**
-     * Reset password with token
-     */
     @Transactional
     public User resetPassword(String token, String newPassword) {
         VerificationToken resetToken = tokenRepository.findByToken(token)
@@ -211,9 +185,6 @@ public class UserService {
         return user;
     }
 
-    /**
-     * Resend verification email
-     */
     public void resendVerificationEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
