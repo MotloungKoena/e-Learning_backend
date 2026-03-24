@@ -30,9 +30,6 @@ public class RatingService {
     @Autowired
     private EnrollmentService enrollmentService;
 
-    /**
-     * Add or update a rating for a course
-     */
     @Transactional
     public RatingResponse rateCourse(Long courseId, Long studentId, RatingRequest request) {
 
@@ -65,9 +62,6 @@ public class RatingService {
         return convertToResponse(savedRating);
     }
 
-    /**
-     * Get all ratings for a course
-     */
     public List<RatingResponse> getCourseRatings(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
@@ -77,9 +71,6 @@ public class RatingService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get rating summary for a course
-     */
     public CourseRatingSummary getCourseRatingSummary(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
@@ -107,18 +98,12 @@ public class RatingService {
         );
     }
 
-    /**
-     * Get rating by ID
-     */
     public RatingResponse getRating(Long ratingId) {
         Rating rating = ratingRepository.findById(ratingId)
                 .orElseThrow(() -> new RuntimeException("Rating not found"));
         return convertToResponse(rating);
     }
 
-    /**
-     * Delete a rating (student can delete their own, admin can delete any)
-     */
     @Transactional
     public void deleteRating(Long ratingId, Long userId, String userRole) {
         Rating rating = ratingRepository.findById(ratingId)
@@ -132,9 +117,6 @@ public class RatingService {
         ratingRepository.delete(rating);
     }
 
-    /**
-     * Check if a student has rated a course
-     */
     public boolean hasRated(Long studentId, Long courseId) {
         User student = userRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -144,9 +126,6 @@ public class RatingService {
         return ratingRepository.existsByStudentAndCourse(student, course);
     }
 
-    /**
-     * Convert Rating entity to RatingResponse DTO
-     */
     private RatingResponse convertToResponse(Rating rating) {
         return new RatingResponse(
                 rating.getId(),
