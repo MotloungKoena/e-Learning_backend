@@ -43,9 +43,6 @@ public class UserController {
         return userService.getAllStudents();
     }
 
-    /**
-     * Get current user details (for frontend to load user after login)
-     */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetailsImpl currentUser) {
@@ -53,7 +50,6 @@ public class UserController {
             User user = userService.getUserById(currentUser.getId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Return user without sensitive data
             Map<String, Object> response = new HashMap<>();
             response.put("id", user.getId());
             response.put("email", user.getEmail());
