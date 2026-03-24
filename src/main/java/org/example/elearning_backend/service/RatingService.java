@@ -158,4 +158,11 @@ public class RatingService {
                 rating.getUpdatedAt()
         );
     }
+
+    public Double getAverageRating(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        Double avg = ratingRepository.getAverageRatingForCourse(course);
+        return avg != null ? Math.round(avg * 10) / 10.0 : null;
+    }
 }
