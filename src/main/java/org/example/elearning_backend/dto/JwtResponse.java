@@ -13,7 +13,6 @@ public class JwtResponse {
     private String role;            // User role
     private String firstName;       // User's first name
 
-    // Constructor without type (type is always "Bearer")
     public JwtResponse(String token, Long id, String email, String role, String firstName) {
         this.token = token;
         this.id = id;
