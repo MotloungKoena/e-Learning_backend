@@ -84,9 +84,24 @@ public class CourseController {
     /**
      * Get course by ID
      */
+    /*@GetMapping("/{courseId}")
+    public ResponseEntity<?> getCourseById(@PathVariable Long courseId) {
+        try {
+            Course course = courseService.getCourseById(courseId);
+            return ResponseEntity.ok(course);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+    }*/
+    /**
+     * Get course by ID - Public endpoint (anyone can view course details)
+     */
     @GetMapping("/{courseId}")
     public ResponseEntity<?> getCourseById(@PathVariable Long courseId) {
         try {
+            System.out.println("=== GET /api/courses/" + courseId + " called ===");
             Course course = courseService.getCourseById(courseId);
             return ResponseEntity.ok(course);
         } catch (Exception e) {

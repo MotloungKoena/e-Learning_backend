@@ -1,10 +1,18 @@
 package org.example.elearning_backend.controller;
 
 import org.example.elearning_backend.model.User;
+import org.example.elearning_backend.security.UserDetailsImpl;
 import org.example.elearning_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -33,5 +41,30 @@ public class UserController {
     @GetMapping("/students")
     public List<User> getStudents() {
         return userService.getAllStudents();
+    }
+
+    /**
+     * Get current user details (for frontend to load user after login)
+     */
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetailsImpl currentUser) {
+        try {
+            User user = userService.getUserById(currentUser.getId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Return user without sensitive data
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", user.getId());
+            response.put("email", user.getEmail());
+            response.put("firstName", user.getFirstName());
+            response.put("lastName", user.getLastName());
+            response.put("role", user.getRole().name());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found");
+        }
     }
 }
