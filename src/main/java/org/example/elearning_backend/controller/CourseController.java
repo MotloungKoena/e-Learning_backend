@@ -20,9 +20,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/courses")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  // FIXED
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class CourseController {
-
     @Autowired
     private CourseService courseService;
 
@@ -32,9 +31,6 @@ public class CourseController {
     @Autowired
     private RatingService ratingService;
 
-    /**
-     * Create a new course (INSTRUCTOR only)
-     */
     @PostMapping
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> createCourse(
@@ -42,7 +38,6 @@ public class CourseController {
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
 
         try {
-            // Convert CourseRequest to Course entity
             Course course = new Course();
             course.setTitle(courseRequest.getTitle());
             course.setDescription(courseRequest.getDescription());
@@ -59,30 +54,12 @@ public class CourseController {
         }
     }
 
-    /**
-     * Get all published courses (anyone can view)
-     */
-    /*@GetMapping("/published")
-    public ResponseEntity<List<Course>> getPublishedCourses() {
-        return ResponseEntity.ok(courseService.getAllPublishedCourses());
-    }*/
-    /*@GetMapping("/published")
-    public ResponseEntity<List<Course>> getPublishedCourses() {
-        System.out.println("=== GET /api/courses/published called ===");
-        List<Course> courses = courseService.getAllPublishedCourses();
-        System.out.println("Found " + courses.size() + " courses");
-        return ResponseEntity.ok(courses);
-    }*/
-    /**
-     * Get all published courses (anyone can view)
-     */
     @GetMapping("/published")
     public ResponseEntity<?> getPublishedCourses() {
         System.out.println("=== GET /api/courses/published called ===");
         List<Course> courses = courseService.getAllPublishedCourses();
         System.out.println("Found " + courses.size() + " courses");
 
-        // Create response with enrollment counts
         List<Map<String, Object>> response = new ArrayList<>();
         for (Course course : courses) {
             Map<String, Object> courseMap = new HashMap<>();
@@ -103,18 +80,12 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Get all courses (ADMIN only)
-     */
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Course>> getAllCourses() {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
-    /**
-     * Get courses by current instructor
-     */
     @GetMapping("/my-courses")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<Course>> getMyCourses(
@@ -122,42 +93,6 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getCoursesByInstructor(currentUser.getId()));
     }
 
-    /**
-     * Get course by ID
-     */
-    /**
-     * Get course by ID - Public endpoint (anyone can view course details)
-     */
-
-    /*@GetMapping("/{courseId}")
-    public ResponseEntity<?> getCourseById(@PathVariable Long courseId) {
-        try {
-            System.out.println("=== GET /api/courses/" + courseId + " called ===");
-            Course course = courseService.getCourseById(courseId);
-
-            // Get enrollment count
-            Long enrollmentCount = enrollmentService.getEnrollmentCount(courseId);
-
-            // Create response with enrollment count
-            Map<String, Object> response = new HashMap<>();
-            response.put("id", course.getId());
-            response.put("title", course.getTitle());
-            response.put("description", course.getDescription());
-            response.put("category", course.getCategory());
-            response.put("price", course.getPrice());
-            response.put("status", course.getStatus());
-            response.put("createdAt", course.getCreatedAt());
-            response.put("instructor", course.getInstructor());
-            response.put("enrollments", course.getEnrollments()); // Keep for compatibility
-            response.put("enrollmentCount", enrollmentCount); // Add the count separately
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
-    }*/
     @GetMapping("/{courseId}")
     public ResponseEntity<?> getCourseById(@PathVariable Long courseId) {
         try {
@@ -184,9 +119,6 @@ public class CourseController {
         }
     }
 
-    /**
-     * Update course (INSTRUCTOR only - must own the course)
-     */
     @PutMapping("/{courseId}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> updateCourse(
@@ -195,7 +127,6 @@ public class CourseController {
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
 
         try {
-            // Convert to Course entity
             Course courseDetails = new Course();
             courseDetails.setTitle(courseRequest.getTitle());
             courseDetails.setDescription(courseRequest.getDescription());
@@ -212,9 +143,6 @@ public class CourseController {
         }
     }
 
-    /**
-     * Publish course (INSTRUCTOR only)
-     */
     @PutMapping("/{courseId}/publish")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> publishCourse(
@@ -231,9 +159,6 @@ public class CourseController {
         }
     }
 
-    /**
-     * Delete course (INSTRUCTOR - own courses, ADMIN - any course)
-     */
     @DeleteMapping("/{courseId}")
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteCourse(
@@ -250,17 +175,11 @@ public class CourseController {
         }
     }
 
-    /**
-     * Search courses by title
-     */
     @GetMapping("/search")
     public ResponseEntity<List<Course>> searchCourses(@RequestParam String keyword) {
         return ResponseEntity.ok(courseService.searchCourses(keyword));
     }
 
-    /**
-     * Get courses by category
-     */
     @GetMapping("/category/{category}")
     public ResponseEntity<List<Course>> getCoursesByCategory(@PathVariable String category) {
         return ResponseEntity.ok(courseService.getCoursesByCategory(category));
