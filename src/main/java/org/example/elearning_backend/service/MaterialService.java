@@ -37,9 +37,6 @@ public class MaterialService {
     @Value("${file.upload-dir:./uploads}")
     private String uploadDir;
 
-    /**
-     * Upload a file and create a material
-     */
     public Material uploadMaterial(Long courseId, MultipartFile file,
                                    String title, String description,
                                    Integer duration, Integer orderIndex,
@@ -85,9 +82,6 @@ public class MaterialService {
         return materialRepository.save(material);
     }
 
-    /**
-     * Get all materials for a course
-     */
     public List<Material> getCourseMaterials(Long courseId, Long userId, String userRole) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
@@ -109,9 +103,6 @@ public class MaterialService {
         return materialRepository.findByCourseOrderByOrderIndexAsc(course);
     }
 
-    /**
-     * Get a single material by ID
-     */
     public Material getMaterial(Long materialId, Long userId, String userRole) {
         Material material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new RuntimeException("Material not found"));
@@ -133,9 +124,6 @@ public class MaterialService {
         return material;
     }
 
-    /**
-     * Delete a material
-     */
     public void deleteMaterial(Long materialId, Long instructorId) throws IOException {
         Material material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new RuntimeException("Material not found"));
@@ -154,9 +142,6 @@ public class MaterialService {
         materialRepository.delete(material);
     }
 
-    /**
-     * Update material details
-     */
     public Material updateMaterial(Long materialId, String title, String description,
                                    Integer duration, Integer orderIndex, Long instructorId) {
         Material material = materialRepository.findById(materialId)
@@ -175,9 +160,6 @@ public class MaterialService {
         return materialRepository.save(material);
     }
 
-    /**
-     * Get file extension from filename
-     */
     private String getFileExtension(String filename) {
         int lastDotIndex = filename.lastIndexOf('.');
         if (lastDotIndex > 0) {
@@ -186,9 +168,6 @@ public class MaterialService {
         return "";
     }
 
-    /**
-     * Determine file type based on extension
-     */
     private FileType determineFileType(String extension) {
         extension = extension.toLowerCase();
 

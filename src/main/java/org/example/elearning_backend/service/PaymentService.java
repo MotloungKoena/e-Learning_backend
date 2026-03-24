@@ -31,9 +31,6 @@ public class PaymentService {
     @Autowired
     private EnrollmentService enrollmentService;
 
-    /**
-     * Create a payment intent for a course purchase
-     */
     public PaymentIntentResponse createPaymentIntent(Long courseId, Long studentId, String currency)
             throws StripeException {
 
@@ -81,9 +78,6 @@ public class PaymentService {
         );
     }
 
-    /**
-     * Handle successful payment (called from webhook)
-     */
     @Transactional
     public void handleSuccessfulPayment(String paymentIntentId) {
         try {
@@ -110,7 +104,7 @@ public class PaymentService {
             enrollmentService.enrollStudent(studentId, courseId);
 
             // TODO: Send confirmation email
-            // TODO: Update payment record in database
+            // TODO: Update payment record in databases
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to process successful payment: " + e.getMessage());
