@@ -25,9 +25,6 @@ public class WebhookController {
     @Autowired
     private PaymentService paymentService;
 
-    /**
-     * Handle Stripe webhook events
-     */
     @PostMapping("/stripe")
     public ResponseEntity<String> handleStripeWebhook(
             @RequestBody String payload,
@@ -89,7 +86,7 @@ public class WebhookController {
 
         if (paymentIntent != null) {
             logger.error("Payment failed for intent: {}", paymentIntent.getId());
-            // TODO: Handle failed payment (notify user, etc.)
+            // TODO: Handle failed payment (notify user)
         }
     }
 }
