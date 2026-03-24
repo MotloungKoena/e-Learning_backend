@@ -12,15 +12,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/enrollments")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  // FIXED
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class EnrollmentController {
 
     @Autowired
     private EnrollmentService enrollmentService;
 
-    /**
-     * Enroll in a course (STUDENT only)
-     */
     @PostMapping("/course/{courseId}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> enrollInCourse(
@@ -37,9 +34,6 @@ public class EnrollmentController {
         }
     }
 
-    /**
-     * Get all enrollments for current student (My Courses)
-     */
     @GetMapping("/my-courses")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<List<Enrollment>> getMyEnrollments(
@@ -49,9 +43,6 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollments);
     }
 
-    /**
-     * Get students enrolled in a course (INSTRUCTOR only - must own course)
-     */
     @GetMapping("/course/{courseId}/students")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> getCourseStudents(
@@ -68,9 +59,6 @@ public class EnrollmentController {
         }
     }
 
-    /**
-     * Update progress in a course (STUDENT only)
-     */
     @PutMapping("/{enrollmentId}/progress")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> updateProgress(
@@ -88,9 +76,6 @@ public class EnrollmentController {
         }
     }
 
-    /**
-     * Check if enrolled in a specific course
-     */
     @GetMapping("/check/{courseId}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> checkEnrollment(
@@ -101,9 +86,6 @@ public class EnrollmentController {
         return ResponseEntity.ok().body("{\"enrolled\": " + isEnrolled + "}");
     }
 
-    /**
-     * Get enrollment count for a course (public info)
-     */
     @GetMapping("/course/{courseId}/count")
     public ResponseEntity<?> getEnrollmentCount(@PathVariable Long courseId) {
         try {
@@ -116,9 +98,6 @@ public class EnrollmentController {
         }
     }
 
-    /**
-     * Unenroll from a course (STUDENT only)
-     */
     @DeleteMapping("/{enrollmentId}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> unenroll(
