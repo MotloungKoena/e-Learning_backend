@@ -25,9 +25,6 @@ public class MaterialController {
     @Autowired
     private MaterialService materialService;
 
-    /**
-     * Upload a material to a course (INSTRUCTOR only)
-     */
     @PostMapping(value = "/courses/{courseId}/materials", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> uploadMaterial(
@@ -60,9 +57,6 @@ public class MaterialController {
         }
     }
 
-    /**
-     * Get all materials for a course (ENROLLED students or INSTRUCTOR)
-     */
     @GetMapping("/courses/{courseId}/materials")
     public ResponseEntity<?> getCourseMaterials(
             @PathVariable Long courseId,
@@ -78,9 +72,6 @@ public class MaterialController {
         }
     }
 
-    /**
-     * Get a single material by ID
-     */
     @GetMapping("/materials/{materialId}")
     public ResponseEntity<?> getMaterial(
             @PathVariable Long materialId,
@@ -96,9 +87,6 @@ public class MaterialController {
         }
     }
 
-    /**
-     * Delete a material (INSTRUCTOR only)
-     */
     @DeleteMapping("/materials/{materialId}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> deleteMaterial(
@@ -117,9 +105,6 @@ public class MaterialController {
         }
     }
 
-    /**
-     * Update material details (INSTRUCTOR only)
-     */
     @PutMapping("/materials/{materialId}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> updateMaterial(
