@@ -72,7 +72,7 @@ public class WebhookController {
             try {
                 // Enroll the student
                 paymentService.handleSuccessfulPayment(paymentIntent.getId());
-                logger.info("Student enrolled successfully");
+                logger.info("Student enrolled successfully!");
             } catch (Exception e) {
                 logger.error("Failed to enroll student: {}", e.getMessage());
             }
@@ -86,7 +86,7 @@ public class WebhookController {
 
         if (paymentIntent != null) {
             logger.error("Payment failed for intent: {}", paymentIntent.getId());
-            // TODO: Handle failed payment (notify user)
+            // TODO: Handle failed payment (notify the user)
         }
     }
 }
