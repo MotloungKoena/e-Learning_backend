@@ -8,12 +8,12 @@ public class TestController {
 
     @GetMapping("/api/test")
     public String testEndpoint() {
-        return "yay Backend is working! You can now build your API!";
+        return "Backend is working! You can now build your API!";
     }
 
     @GetMapping("/api/hello")
     public String hello() {
-        return "Hello from E-Learning Platform!";
+        return "It's a Hello from E-Learning Platform!";
     }
 
     @GetMapping("/api/health")
