@@ -101,7 +101,7 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
-                    .body("Error: Invalid email or password hey");
+                    .body("Error: Invalid email or password.");
         }
     }
 
