@@ -13,7 +13,7 @@ public class StripeConfig {
 
     @PostConstruct
     public void initStripe() {
-        // Initialize Stripe with secret key
+        // Initialize Stripe with the secret key
         Stripe.apiKey = secretKey;
     }
 }
