@@ -1,4 +1,4 @@
-package org.example.elearning_backend.controller;
+/*package org.example.elearning_backend.controller;
 
 import org.example.elearning_backend.model.User;
 import org.example.elearning_backend.model.UserStatus;
@@ -92,14 +92,15 @@ public class UserController {
                     .body("User not found");
         }
     }
-}
+}*/
 
 
 //commented out code
 
-/*package org.example.elearning_backend.controller;
+package org.example.elearning_backend.controller;
 
 import org.example.elearning_backend.model.User;
+import org.example.elearning_backend.model.UserStatus;
 import org.example.elearning_backend.security.UserDetailsImpl;
 import org.example.elearning_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,11 +121,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
@@ -191,4 +187,4 @@ public class UserController {
                     .body("User not found");
         }
     }
-}*/
+}

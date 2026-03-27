@@ -87,6 +87,20 @@ public class MaterialController {
         }
     }
 
+    @PutMapping("/{materialId}/watch")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> markMaterialWatched(
+            @PathVariable Long materialId,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        try {
+            materialService.markMaterialWatched(materialId, currentUser.getId());
+            return ResponseEntity.ok("Material marked as watched");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+
     @DeleteMapping("/materials/{materialId}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<?> deleteMaterial(

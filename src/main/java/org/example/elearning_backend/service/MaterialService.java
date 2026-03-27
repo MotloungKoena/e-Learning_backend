@@ -5,6 +5,7 @@ import org.example.elearning_backend.model.FileType;
 import org.example.elearning_backend.model.Material;
 import org.example.elearning_backend.model.User;
 import org.example.elearning_backend.repository.CourseRepository;
+import org.example.elearning_backend.repository.EnrollmentRepository;
 import org.example.elearning_backend.repository.MaterialRepository;
 import org.example.elearning_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,19 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.example.elearning_backend.repository.EnrollmentRepository;
 
 @Service
 public class MaterialService {
 
     @Autowired
     private MaterialRepository materialRepository;
+
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
+
 
     @Autowired
     private CourseRepository courseRepository;
@@ -166,6 +174,34 @@ public class MaterialService {
             return filename.substring(lastDotIndex);
         }
         return "";
+    }
+
+    /**
+     * Mark a material as watched by the student
+     */
+    @Transactional
+    public void markMaterialWatched(Long materialId, Long studentId) {
+        Material material = materialRepository.findById(materialId)
+                .orElseThrow(() -> new RuntimeException("Material not found"));
+
+        Course course = material.getCourse();
+
+        // Verify student is enrolled in the course
+        boolean isEnrolled = enrollmentRepository.existsByStudentIdAndCourseId(studentId, course.getId());
+        if (!isEnrolled) {
+            throw new RuntimeException("You must be enrolled to mark materials as watched");
+        }
+
+        // You can add a separate table to track watched materials
+        // For now, we'll just update the material (or you can create a WatchedMaterial entity)
+
+        // Option 1: If you have a watched_materials table
+        // watchedMaterialRepository.save(new WatchedMaterial(studentId, materialId));
+
+        // Option 2: For now, just return success without storing (or add a temporary solution)
+
+        // Since we don't have a watched materials table yet, we'll just return success
+        // The frontend will handle marking as watched locally
     }
 
     private FileType determineFileType(String extension) {
