@@ -9,6 +9,7 @@ import org.example.elearning_backend.model.UserStatus;
 import org.example.elearning_backend.repository.UserRepository;
 import org.example.elearning_backend.security.JwtUtils;
 import org.example.elearning_backend.security.UserDetailsImpl;
+import org.example.elearning_backend.service.EmailService;
 import org.example.elearning_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,15 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -42,6 +47,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/test")
     public String test() {
@@ -105,7 +113,6 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
@@ -132,7 +139,15 @@ public class AuthController {
             }
 
             // Register with verification
-            userService.registerUserWithVerification(user);
+            User savedUser = userService.registerUserWithVerification(user);
+
+            // Send welcome email after successful registration
+            try {
+                emailService.sendWelcomeEmail(savedUser.getEmail(), savedUser.getFirstName());
+                logger.info("Welcome email sent to: {}", savedUser.getEmail());
+            } catch (Exception e) {
+                logger.error("Failed to send welcome email to {}: {}", savedUser.getEmail(), e.getMessage());
+            }
 
             return ResponseEntity.ok("User registered successfully! Please check your email to verify your account.");
 
@@ -203,7 +218,6 @@ public class AuthController {
                     .body("Error: " + e.getMessage());
         }
     }
-
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(

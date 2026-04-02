@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class EnrollmentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(EnrollmentService.class);
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
@@ -22,6 +26,9 @@ public class EnrollmentService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public Enrollment enrollStudent(Long studentId, Long courseId) {
         // Check if already enrolled
@@ -48,8 +55,25 @@ public class EnrollmentService {
         enrollment.setEnrolledAt(LocalDateTime.now());
         enrollment.setProgress(0);
         enrollment.setCompleted(false);
+        enrollment.setUpdatedAt(LocalDateTime.now());
 
-        return enrollmentRepository.save(enrollment);
+        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+
+        // Send enrollment confirmation email
+        try {
+            emailService.sendEnrollmentEmail(
+                    student.getEmail(),
+                    student.getFirstName(),
+                    course.getTitle(),
+                    course.getInstructor().getFirstName() + " " + course.getInstructor().getLastName(),
+                    courseId
+            );
+            logger.info("Enrollment email sent to: {}", student.getEmail());
+        } catch (Exception e) {
+            logger.error("Failed to send enrollment email to {}: {}", student.getEmail(), e.getMessage());
+        }
+
+        return savedEnrollment;
     }
 
     public List<Enrollment> getStudentEnrollments(Long studentId) {
@@ -74,21 +98,34 @@ public class EnrollmentService {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-        // Verify this enrollment belongs to the student
         if (!enrollment.getStudent().getId().equals(studentId)) {
             throw new RuntimeException("You don't have permission to update this enrollment");
         }
 
-        // Validate progress (0-100)
         if (progress < 0 || progress > 100) {
             throw new RuntimeException("Progress must be between 0 and 100");
         }
 
-        enrollment.setProgress(progress);
+        boolean wasCompleted = enrollment.getCompleted();
 
-        // If progress is 100, mark as completed
-        if (progress == 100) {
+        enrollment.setProgress(progress);
+        enrollment.setUpdatedAt(LocalDateTime.now());
+
+        if (progress == 100 && !wasCompleted) {
             enrollment.setCompleted(true);
+
+            // Send course completion email
+            try {
+                emailService.sendCompletionEmail(
+                        enrollment.getStudent().getEmail(),
+                        enrollment.getStudent().getFirstName(),
+                        enrollment.getCourse().getTitle(),
+                        enrollmentId
+                );
+                logger.info("Completion email sent to: {}", enrollment.getStudent().getEmail());
+            } catch (Exception e) {
+                logger.error("Failed to send completion email to {}: {}", enrollment.getStudent().getEmail(), e.getMessage());
+            }
         }
 
         return enrollmentRepository.save(enrollment);
