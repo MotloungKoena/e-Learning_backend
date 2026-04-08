@@ -45,14 +45,14 @@ git clone https://github.com/MotloungKoena/e-Learning_backend.git
 ### **Create MySQL Database**
 CREATE DATABASE elearning_db;
 
-Configure application.properties
+### **Configure application.properties**
 1. spring.datasource.username=root
 2. spring.datasource.password=your_password
 3. spring.mail.username=your_email@gmail.com
 4. spring.mail.password=your_app_password
 
 
-**Set Stripe environment variables**
+### **Set Stripe environment variables**
 
 STRIPE_PUBLISHABLE_KEY=pk_test_...
 
