@@ -1,10 +1,10 @@
 # E-Learning Platform - Backend API
 
-## 🚀 Overview
+##  Overview
 
 Backend API for the E-Learning Platform built with Spring Boot. Handles user authentication, course management, enrollments, payments, and email notifications.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - Java 17
 - Spring Boot 4.0.3
@@ -13,7 +13,7 @@ Backend API for the E-Learning Platform built with Spring Boot. Handles user aut
 - Stripe API (Payments)
 - Gmail SMTP (Emails)
 
-## ✨ Features
+##  Features
 
 - JWT Authentication with 3 roles (Student, Instructor, Admin)
 - Course CRUD operations
@@ -25,7 +25,7 @@ Backend API for the E-Learning Platform built with Spring Boot. Handles user aut
 - PDF certificate generation
 - Admin user management
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
