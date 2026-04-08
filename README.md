@@ -45,6 +45,7 @@ git clone https://github.com/MotloungKoena/e-Learning_backend.git
 ### **Create MySQL Database**
 CREATE DATABASE elearning_db;
 
+
 ### **Configure application.properties**
 1. spring.datasource.username=root
 2. spring.datasource.password=your_password
@@ -57,5 +58,6 @@ CREATE DATABASE elearning_db;
 STRIPE_PUBLISHABLE_KEY=pk_test_...
 
 STRIPE_SECRET_KEY=sk_test_...
+
 
 -Run the application 
