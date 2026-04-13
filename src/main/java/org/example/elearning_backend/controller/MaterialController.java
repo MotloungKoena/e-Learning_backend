@@ -18,8 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-//@CrossOrigin(origins = "*")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  // FIXED
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class MaterialController {
 
     @Autowired
@@ -99,7 +98,6 @@ public class MaterialController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
-
 
     @DeleteMapping("/materials/{materialId}")
     @PreAuthorize("hasRole('INSTRUCTOR')")

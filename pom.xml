@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>org.example</groupId>
     <artifactId>e-Learning_backend</artifactId>
@@ -115,6 +115,7 @@
             <artifactId>stripe-java</artifactId>
             <version>24.17.0</version>
         </dependency>
+
         <!-- PDF Generation -->
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -164,5 +165,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -27,7 +27,6 @@ public class EmailService {
     @Value("${app.frontend-url}")
     private String frontendUrl;
 
-    // Existing method - keep as is
     public void sendVerificationEmail(String toEmail, String token) {
         String subject = "Verify Your Email - E-Learning Platform";
         String verificationLink = baseUrl + "/api/auth/verify-email?token=" + token;
@@ -47,7 +46,6 @@ public class EmailService {
         sendEmail(toEmail, subject, message);
     }
 
-    // Existing method - keep as is
     public void sendPasswordResetEmail(String toEmail, String token) {
         String subject = "Password Reset Request - E-Learning Platform";
         String resetLink = baseUrl + "/api/auth/reset-password?token=" + token;
@@ -68,7 +66,6 @@ public class EmailService {
         sendEmail(toEmail, subject, message);
     }
 
-    // ============ NEW METHODS ============
 
     public void sendWelcomeEmail(String toEmail, String name) {
         String subject = "Welcome to E-Learning Platform!";
@@ -203,7 +200,6 @@ public class EmailService {
             """, studentName, courseTitle, certificateLink);
     }
 
-    // Plain text email (keep existing)
     private void sendEmail(String to, String subject, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();

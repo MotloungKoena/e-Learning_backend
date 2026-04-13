@@ -39,7 +39,7 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Add @JsonIgnore here to break the infinite loop
+    // Added @JsonIgnore here to break the infinite loop
     @JsonIgnore
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Enrollment> enrollments;

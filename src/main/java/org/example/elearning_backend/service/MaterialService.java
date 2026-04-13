@@ -73,7 +73,7 @@ public class MaterialService {
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Determine file type
+        // Determine the file type
         FileType fileType = determineFileType(fileExtension);
 
         // Create material
@@ -146,7 +146,7 @@ public class MaterialService {
         Path filePath = Paths.get(uploadDir).resolve(fileName);
         Files.deleteIfExists(filePath);
 
-        // Delete database record
+        // Delete the db record
         materialRepository.delete(material);
     }
 
@@ -176,9 +176,6 @@ public class MaterialService {
         return "";
     }
 
-    /**
-     * Mark a material as watched by the student
-     */
     @Transactional
     public void markMaterialWatched(Long materialId, Long studentId) {
         Material material = materialRepository.findById(materialId)
@@ -191,17 +188,6 @@ public class MaterialService {
         if (!isEnrolled) {
             throw new RuntimeException("You must be enrolled to mark materials as watched");
         }
-
-        // You can add a separate table to track watched materials
-        // For now, we'll just update the material (or you can create a WatchedMaterial entity)
-
-        // Option 1: If you have a watched_materials table
-        // watchedMaterialRepository.save(new WatchedMaterial(studentId, materialId));
-
-        // Option 2: For now, just return success without storing (or add a temporary solution)
-
-        // Since we don't have a watched materials table yet, we'll just return success
-        // The frontend will handle marking as watched locally
     }
 
     private FileType determineFileType(String extension) {

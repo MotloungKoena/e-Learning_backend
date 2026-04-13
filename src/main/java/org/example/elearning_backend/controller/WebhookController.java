@@ -86,7 +86,7 @@ public class WebhookController {
 
         if (paymentIntent != null) {
             logger.error("Payment failed for intent: {}", paymentIntent.getId());
-            // TODO: Handle failed payment (notify the user)
+            // TODO: Handle failed payment (notify the user maybe here)
         }
     }
 }

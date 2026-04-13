@@ -51,9 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/courses/published").permitAll()
                         .requestMatchers("/api/courses/search").permitAll()
                         .requestMatchers("/api/courses/category/**").permitAll()
-                        //.requestMatchers("/api/courses/{courseId}").permitAll()
                         .requestMatchers("/api/courses/*").permitAll()
-                        // Role-based endpoints - will be handled by @PreAuthorize annotations
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)

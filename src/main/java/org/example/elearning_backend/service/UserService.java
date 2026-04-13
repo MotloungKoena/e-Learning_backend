@@ -72,7 +72,6 @@ public class UserService {
         return userRepository.findByStatus(status);
     }
 
-    // Add this method to UserService.java
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
@@ -109,7 +108,7 @@ public class UserService {
         VerificationToken verificationToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid verification token"));
 
-        // Check if token is expired
+        // Check if token is expired already
         if (verificationToken.isExpired()) {
             throw new RuntimeException("Verification token has expired");
         }

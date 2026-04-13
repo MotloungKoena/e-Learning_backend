@@ -48,7 +48,6 @@ public class PaymentService {
             throw new RuntimeException("Already enrolled in this course");
         }
 
-        // Calculate amount in cents (Stripe uses smallest currency unit)
         Long amount = (long) (course.getPrice() * 100);
 
         // Create payment intent parameters

@@ -39,7 +39,7 @@ public class Course {
     @JoinColumn(name = "instructor_id")
     private User instructor;
 
-    // Add @JsonIgnore here to break the infinite loop
+    // Added @JsonIgnore here to break the infinite loop
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Enrollment> enrollments;

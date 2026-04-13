@@ -45,7 +45,7 @@ public class RatingService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        // Check if student already rated this course
+        // Check if student has already rated this course
         Rating rating = ratingRepository.findByStudentAndCourse(student, course)
                 .orElse(new Rating());
 
